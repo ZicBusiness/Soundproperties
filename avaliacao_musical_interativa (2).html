@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Musical - Propriedades do Som</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .logo-section {
+            margin-bottom: 25px;
+        }
+
+        #professorLogo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        #professorLogo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .student-info {
+            background: rgba(240, 248, 255, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .info-field label {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .info-field input {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .info-field input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .finish-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .finish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .finish-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .musical-note {
+            display: inline-block;
+            font-size: 3rem;
+            color: #e53e3e;
+            animation: bounce 2s infinite;
+            margin: 0 10px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .property-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .altura { background: #ffd93d; }
+        .intensidade { background: #ff6b6b; }
+        .duracao { background: #4ecdc4; }
+        .timbre { background: #95e1d3; }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background: #f7fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: scale(1.02);
+        }
+
+        .option.selected {
+            background: #e6fffa;
+            border-color: #38b2ac;
+            color: #234e52;
+        }
+
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+            color: #22543d;
+        }
+
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+            color: #742a2a;
+        }
+
+        .drag-drop-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .drop-zone {
+            background: #f0fff4;
+            border: 3px dashed #68d391;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            background: #e6fffa;
+            border-color: #38b2ac;
+            transform: scale(1.02);
+        }
+
+        .draggable-item {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 5px;
+            cursor: grab;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .draggable-item:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .feedback.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #38a169;
+        }
+
+        .feedback.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #e53e3e;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .drag-drop-area { grid-template-columns: 1fr; }
+            .options { grid-template-columns: 1fr; }
+            
+            #professorLogo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <img id="professorLogo" src="MiniRo(1).png" alt="Professor Rodrigo Logo">
+                <h1>
+                    <span class="musical-note">♪</span>
+                    Professor Rodrigo
+                    <span class="musical-note">♫</span>
+                </h1>
+                <h2 style="color: #4a5568; font-size: 1.8rem; margin: 10px 0;">Propriedades do Som</h2>
+                <p>Vamos descobrir como os sons são diferentes!</p>
+            </div>
+            
+            <!-- Campos de informações do aluno -->
+            <div class="student-info">
+                <div class="info-grid">
+                    <div class="info-field">
+                        <label for="studentName">👤 Nome do Aluno:</label>
+                        <input type="text" id="studentName" placeholder="Digite seu nome completo">
+                    </div>
+                    <div class="info-field">
+                        <label for="schoolName">🏫 Escola:</label>
+                        <input type="text" id="schoolName" placeholder="Digite o nome da sua escola">
+                    </div>
+                    <div class="info-field">
+                        <label for="testDate">📅 Data da Avaliação:</label>
+                        <input type="date" id="testDate">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Questão 1: Altura -->
+        <div class="question-card" id="question1">
+            <div class="question-title">
+                <div class="property-icon altura">🎵</div>
+                1. Qual som é mais AGUDO?
+            </div>
+            <div class="options">
+                <div class="option" data-answer="false">🦁 Rugido do leão</div>
+                <div class="option" data-answer="true">🐦 Pio do passarinho</div>
+                <div class="option" data-answer="false">👨 Voz do papai</div>
+            </div>
+        </div>
+
+        <!-- Questão 2: Intensidade -->
+        <div class="question-card" id="question2">
+            <div class="question-title">
+                <div class="property-icon intensidade">🔊</div>
+                2. Qual som é mais FORTE?
+            </div>
+            <div class="options">
+                <div class="option" data-answer="false">🤫 Sussurro</div>
+                <div class="option" data-answer="true">⛈️ Trovão</div>
+                <div class="option" data-answer="false">🍃 Folha caindo</div>
+            </div>
+        </div>
+
+        <!-- Questão 3: Duração -->
+        <div class="question-card" id="question3">
+            <div class="question-title">
+                <div class="property-icon duracao">⏱️</div>
+                3. Qual som dura mais tempo?
+            </div>
+            <div class="options">
+                <div class="option" data-answer="false">👏 Palma rápida</div>
+                <div class="option" data-answer="true">🚨 Sirene da ambulância</div>
+                <div class="option" data-answer="false">💧 Pingo de chuva</div>
+            </div>
+        </div>
+
+        <!-- Questão 4: Drag and Drop -->
+        <div class="question-card" id="question4">
+            <div class="question-title">
+                <div class="property-icon timbre">🎸</div>
+                4. Arraste os sons para a categoria correta:
+            </div>
+            
+            <div class="items-container">
+                <div class="draggable-item" data-category="grave">🐮 Mugido da vaca</div>
+                <div class="draggable-item" data-category="agudo">🐭 Squeak do ratinho</div>
+                <div class="draggable-item" data-category="grave">🥁 Som do tambor</div>
+                <div class="draggable-item" data-category="agudo">🎼 Flauta</div>
+            </div>
+
+            <div class="drag-drop-area">
+                <div class="drop-zone" data-category="grave">
+                    <h3>Sons GRAVES 📉</h3>
+                    <p>Arraste aqui os sons baixos</p>
+                </div>
+                <div class="drop-zone" data-category="agudo">
+                    <h3>Sons AGUDOS 📈</h3>
+                    <p>Arraste aqui os sons altos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questão 5: Timbre -->
+        <div class="question-card" id="question5">
+            <div class="question-title">
+                <div class="property-icon timbre">🎹</div>
+                5. Cada instrumento tem seu timbre único. Qual instrumento faz este som: "Plim, plim, plim"?
+            </div>
+            <div class="options">
+                <div class="option" data-answer="false">🎸 Violão</div>
+                <div class="option" data-answer="true">🎹 Piano</div>
+                <div class="option" data-answer="false">🥁 Tambor</div>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswers()">
+            Verificar Respostas ✨
+        </button>
+
+        <div id="feedback" class="feedback" style="display: none;"></div>
+
+        <div class="final-buttons" id="finalButtons" style="display: none;">
+            <button class="finish-btn" onclick="generatePDF()">
+                📄 Finalizar e Salvar PDF
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        let answers = {};
+        let dragDropAnswers = {};
+        let totalQuestions = 5;
+        let testCompleted = false;
+
+        // Funcionalidade de múltipla escolha
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionCard = this.closest('.question-card');
+                const questionId = questionCard.id;
+                
+                // Remove seleção anterior
+                questionCard.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Adiciona seleção atual
+                this.classList.add('selected');
+                answers[questionId] = this.dataset.answer === 'true';
+                
+                updateProgress();
+            });
+        });
+
+        // Funcionalidade Drag and Drop
+        const draggables = document.querySelectorAll('.draggable-item');
+        const dropZones = document.querySelectorAll('.drop-zone');
+
+        draggables.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                this.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', this.dataset.category);
+                e.dataTransfer.setData('text/html', this.outerHTML);
+            });
+
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+
+            item.draggable = true;
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const itemCategory = e.dataTransfer.getData('text/plain');
+                const itemHTML = e.dataTransfer.getData('text/html');
+                const dropCategory = this.dataset.category;
+                
+                if (itemCategory === dropCategory) {
+                    // Resposta correta
+                    this.innerHTML += itemHTML;
+                    dragDropAnswers[itemCategory] = true;
+                    
+                    // Remove item original
+                    const originalItem = document.querySelector(`.draggable-item[data-category="${itemCategory}"].dragging`);
+                    if (originalItem) {
+                        originalItem.remove();
+                    }
+                } else {
+                    // Resposta incorreta - item volta para posição original
+                    dragDropAnswers[itemCategory] = false;
+                }
+                
+                updateProgress();
+            });
+        });
+
+        // Definir data atual automaticamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('testDate').value = today;
+        });
+
+        function updateProgress() {
+            const answeredQuestions = Object.keys(answers).length + Object.keys(dragDropAnswers).length;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+            
+            // Verifica questões de múltipla escolha
+            for (let question in answers) {
+                total++;
+                if (answers[question]) {
+                    correct++;
+                    const questionCard = document.getElementById(question);
+                    const correctOption = questionCard.querySelector('.option[data-answer="true"]');
+                    correctOption.classList.add('correct');
+                } else {
+                    const questionCard = document.getElementById(question);
+                    const selectedOption = questionCard.querySelector('.option.selected');
+                    if (selectedOption) {
+                        selectedOption.classList.add('incorrect');
+                    }
+                    const correctOption = questionCard.querySelector('.option[data-answer="true"]');
+                    correctOption.classList.add('correct');
+                }
+            }
+            
+            // Verifica drag and drop
+            for (let item in dragDropAnswers) {
+                total++;
+                if (dragDropAnswers[item]) {
+                    correct++;
+                }
+            }
+            
+            // Mostra feedback
+            const feedback = document.getElementById('feedback');
+            const percentage = Math.round((correct / total) * 100);
+            
+            if (percentage >= 70) {
+                feedback.className = 'feedback success';
+                feedback.innerHTML = `🎉 Parabéns! Você acertou ${correct} de ${total} questões (${percentage}%)! <br>Você entende bem as propriedades do som! 🎵`;
+            } else {
+                feedback.className = 'feedback error';
+                feedback.innerHTML = `📚 Continue praticando! Você acertou ${correct} de ${total} questões (${percentage}%). <br>Revise as propriedades do som e tente novamente! 💪`;
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Mostra botão de finalizar
+            document.getElementById('finalButtons').style.display = 'flex';
+            testCompleted = true;
+            
+            // Scroll para o feedback
+            feedback.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generatePDF() {
+            const studentName = document.getElementById('studentName').value;
+            const schoolName = document.getElementById('schoolName').value;
+            const testDate = document.getElementById('testDate').value;
+
+            if (!studentName.trim()) {
+                alert('⚠️ Por favor, preencha o nome do aluno antes de finalizar!');
+                document.getElementById('studentName').focus();
+                return;
+            }
+
+            if (!testCompleted) {
+                alert('⚠️ Por favor, verifique as respostas antes de finalizar!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            // Configurações do PDF
+            pdf.setFontSize(20);
+            pdf.text('Avaliação Musical - Propriedades do Som', 20, 30);
+            
+            pdf.setFontSize(16);
+            pdf.text('Professor Rodrigo', 20, 45);
+            
+            pdf.setFontSize(12);
+            pdf.text(`Aluno: ${studentName}`, 20, 60);
+            pdf.text(`Escola: ${schoolName || 'Não informado'}`, 20, 70);
+            pdf.text(`Data: ${new Date(testDate).toLocaleDateString('pt-BR')}`, 20, 80);
+            
+            // Adiciona linha separadora
+            pdf.line(20, 85, 190, 85);
+            
+            let yPosition = 100;
+            
+            // Adiciona respostas
+            pdf.setFontSize(14);
+            pdf.text('Respostas:', 20, yPosition);
+            yPosition += 15;
+            
+            pdf.setFontSize(11);
+            
+            // Questões de múltipla escolha
+            const questions = [
+                { id: 'question1', text: '1. Qual som é mais AGUDO?', correct: 'Pio do passarinho' },
+                { id: 'question2', text: '2. Qual som é mais FORTE?', correct: 'Trovão' },
+                { id: 'question3', text: '3. Qual som dura mais tempo?', correct: 'Sirene da ambulância' },
+                { id: 'question5', text: '5. Qual instrumento faz "Plim, plim, plim"?', correct: 'Piano' }
+            ];
+            
+            questions.forEach(q => {
+                const questionCard = document.getElementById(q.id);
+                const selectedOption = questionCard?.querySelector('.option.selected');
+                const isCorrect = answers[q.id] === true;
+                
+                pdf.text(q.text, 20, yPosition);
+                yPosition += 10;
+                
+                if (selectedOption) {
+                    const answerText = selectedOption.textContent.trim();
+                    pdf.text(`   Resposta: ${answerText} ${isCorrect ? '✓' : '✗'}`, 25, yPosition);
+                } else {
+                    pdf.text('   Resposta: Não respondida ✗', 25, yPosition);
+                }
+                yPosition += 10;
+                
+                if (!isCorrect) {
+                    pdf.text(`   Resposta correta: ${q.correct}`, 25, yPosition);
+                    yPosition += 10;
+                }
+                yPosition += 5;
+            });
+
+            // Questão Drag and Drop (simplificado para PDF)
+            pdf.text('4. Arraste os sons para a categoria correta:', 20, yPosition);
+            yPosition += 10;
+            
+            const dragDropItems = [
+                { item: '🐮 Mugido da vaca', category: 'grave' },
+                { item: '🐭 Squeak do ratinho', category: 'agudo' },
+                { item: '🥁 Som do tambor', category: 'grave' },
+                { item: '🎼 Flauta', category: 'agudo' }
+            ];
+
+            dragDropItems.forEach(item => {
+                const isCorrectlyPlaced = dragDropAnswers[item.category]; // Simplificado, idealmente verificaria se o item está na zona correta
+                pdf.text(`   ${item.item} -> ${item.category.toUpperCase()} ${isCorrectlyPlaced ? '✓' : '✗'}`, 25, yPosition);
+                yPosition += 10;
+            });
+            yPosition += 5;
+
+            // Adiciona feedback final
+            const finalFeedback = document.getElementById('feedback').innerText;
+            pdf.setFontSize(12);
+            pdf.text('Feedback Final:', 20, yPosition);
+            yPosition += 10;
+            pdf.text(finalFeedback, 20, yPosition, { maxWidth: 170 });
+
+            // Salva o PDF
+            pdf.save(`Avaliacao_Musical_${studentName.replace(/ /g, '_')}.pdf`);
+        }
+    </script>
+</body>
+</html>
+
